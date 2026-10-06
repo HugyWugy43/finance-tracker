@@ -1,0 +1,5 @@
+import {validateTransaction} from '@/lib/finance';
+import {ApiError,body,db,json,route,user} from '@/lib/server';
+type Context={params:Promise<{id:string}>};
+export const PATCH=(request: Request,context: Context)=>route(async()=>{const current=await user(request),{id}=await context.params,b=await body(request);let t;try{t=validateTransaction(b);}catch(e){throw new ApiError((e as Error).message);}const result=await db().prepare('UPDATE transactions SET type=?,amount=?,category=?,title=?,date=?,account=? WHERE id=? AND user_id=?').bind(t.type,t.amount,t.category,t.title,t.date,t.account,id,current.id).run();if(!result.meta.changes)throw new ApiError('Операция не найдена.',404);return json({transaction:{id,...t}});});
+export const DELETE=(request: Request,context: Context)=>route(async()=>{await body(request);const current=await user(request),{id}=await context.params;const result=await db().prepare('DELETE FROM transactions WHERE id=? AND user_id=?').bind(id,current.id).run();if(!result.meta.changes)throw new ApiError('Операция не найдена.',404);return json({ok:true});});
