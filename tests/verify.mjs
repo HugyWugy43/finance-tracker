@@ -1,100 +1,353 @@
-import {chromium,request} from 'playwright';
-import assert from 'node:assert/strict';
-import {mkdir,writeFile} from 'node:fs/promises';
-const baseURL=process.env.ORBIT_URL||'http://127.0.0.1:5173';
-const checks=[];
-const check=(name,condition)=>{assert.ok(condition,name);checks.push(name);console.log('PASS',name);};
-const client=await request.newContext({baseURL});
-const outsider=await request.newContext({baseURL});
-const id=Date.now().toString(36), credentials={fullName:'Тестовый Пользователь',nickname:`qa_${id}`,email:`qa_${id}@example.test`,password:'Orbit!2026Secure'};
-check('Unauthorized data access denied',(await client.get('/api/transactions')).status()===401);
-let r=await client.post('/api/auth/register',{data:credentials});
-check('Registration creates an account',r.status()===201);
-check('Session cookie is HttpOnly',r.headers()['set-cookie']?.includes('HttpOnly'));
-check('New account has no demo transactions',(await (await client.get('/api/transactions')).json()).transactions.length===0);
-const today=new Date().toLocaleDateString('sv-SE');
-const expense={type:'expense',title:'Тестовая покупка',amount:123456,category:'food',date:today,account:'Основной счёт'};
-r=await client.post('/api/transactions',{data:expense});
-const transaction=(await r.json()).transaction;
-check('Create expense',r.status()===201&&transaction.amount===123456);
-check('Zero amount rejected',(await client.post('/api/transactions',{data:{...expense,amount:0}})).status()===400);
-check('Decimal cents rejected',(await client.post('/api/transactions',{data:{...expense,amount:12.345}})).status()===400);
-check('Invalid date rejected',(await client.post('/api/transactions',{data:{...expense,date:'2026-02-30'}})).status()===400);
-check('Invalid category rejected',(await client.post('/api/transactions',{data:{...expense,category:'salary'}})).status()===400);
-check('Future date rejected',(await client.post('/api/transactions',{data:{...expense,date:'2099-01-01'}})).status()===400);
-check('Cross-origin write rejected',(await client.post('/api/transactions',{data:expense,headers:{Origin:'https://untrusted.example'}})).status()===403);
-await outsider.post('/api/auth/register',{data:{...credentials,email:`other_${id}@example.test`,nickname:`other_${id}`}});
-check('Other user cannot read records',(await (await outsider.get('/api/transactions')).json()).transactions.length===0);
-check('Other user cannot edit records',(await outsider.patch(`/api/transactions/${transaction.id}`,{data:expense})).status()===404);
-check('Other user cannot delete records',(await outsider.delete(`/api/transactions/${transaction.id}`,{data:{}})).status()===404);
-check('Update operation',(await client.patch(`/api/transactions/${transaction.id}`,{data:{...expense,amount:22200,title:'Изменённая покупка'}})).status()===200);
-check('Budget persists',(await client.patch('/api/budget',{data:{budget:9000000}})).status()===200&&(await (await client.get('/api/me')).json()).user.budget===9000000);
-check('Duplicate account rejected',(await outsider.post('/api/auth/register',{data:credentials})).status()===409);
-await client.post('/api/auth/logout',{data:{}});
-check('Logout invalidates session',(await client.get('/api/me')).status()===401);
-check('Wrong password rejected',(await client.post('/api/auth/login',{data:{email:credentials.email,password:'not-correct'}})).status()===401);
-check('Login succeeds',(await client.post('/api/auth/login',{data:credentials})).status()===200);
-check('Transactions survive logout',(await (await client.get('/api/transactions')).json()).transactions[0].title==='Изменённая покупка');
-check('Delete operation',(await client.delete(`/api/transactions/${transaction.id}`,{data:{}})).status()===200);
-const browser=await chromium.launch({headless:true,channel:process.env.PLAYWRIGHT_CHANNEL||'chrome'});
-const context=await browser.newContext({viewport:{width:1440,height:1100}}), page=await context.newPage();
-const errors=[];page.on('pageerror',e=>errors.push(e.message));
-await page.goto(baseURL,{waitUntil:'domcontentloaded'});
-await page.getByRole('heading',{name:'Куда уходят деньги'}).waitFor();
-await page.evaluate(()=>document.fonts.ready);
-await mkdir('design',{recursive:true});
-for(const size of [{name:'desktop',width:1440,height:1100},{name:'tablet',width:834,height:1112},{name:'mobile',width:390,height:844}]){
- await page.setViewportSize(size);
- for(const theme of ['dark','light']){
-   await page.evaluate(theme=>{localStorage.setItem('orbit-theme',theme);},theme);
-   await page.reload({waitUntil:'domcontentloaded'});
-   await page.getByRole('heading',{name:'Куда уходят деньги'}).waitFor();
-   await page.evaluate(()=>document.fonts.ready);
-   await page.screenshot({path:`design/${size.name}-${theme}.png`,fullPage:true,animations:'disabled'});
-   check(`${size.name} ${theme}: no horizontal overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
- }
+import { chromium, request } from "playwright";
+import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
+import { mkdir, writeFile } from "node:fs/promises";
+const baseURL = process.env.ORBIT_URL || "http://127.0.0.1:5173";
+const checks = [];
+const check = (name, condition) => {
+  assert.ok(condition, name);
+  checks.push(name);
+  console.log("PASS", name);
+};
+const client = await request.newContext({ baseURL });
+const outsider = await request.newContext({ baseURL });
+const id = Date.now().toString(36),
+  credentials = {
+    fullName: "Тест",
+    email: `qa_${id}@example.test`,
+    password: `Orbit!${randomUUID()}`,
+  };
+check(
+  "Unauthorized data access denied",
+  (await client.get("/api/transactions")).status() === 401,
+);
+let r = await client.post("/api/auth/register", { data: credentials });
+check("Registration creates an account", r.status() === 201);
+check(
+  "Session cookie is HttpOnly",
+  r.headers()["set-cookie"]?.includes("HttpOnly"),
+);
+check(
+  "New account has no demo transactions",
+  (await (await client.get("/api/transactions")).json()).transactions.length ===
+    0,
+);
+const today = new Date().toLocaleDateString("sv-SE");
+const expense = {
+  type: "expense",
+  title: "Тестовая покупка",
+  amount: 123456,
+  category: "food",
+  date: today,
+  account: "Основной счёт",
+};
+r = await client.post("/api/transactions", { data: expense });
+const transaction = (await r.json()).transaction;
+check("Create expense", r.status() === 201 && transaction.amount === 123456);
+check(
+  "Zero amount rejected",
+  (
+    await client.post("/api/transactions", { data: { ...expense, amount: 0 } })
+  ).status() === 400,
+);
+check(
+  "Decimal cents rejected",
+  (
+    await client.post("/api/transactions", {
+      data: { ...expense, amount: 12.345 },
+    })
+  ).status() === 400,
+);
+check(
+  "Invalid date rejected",
+  (
+    await client.post("/api/transactions", {
+      data: { ...expense, date: "2026-02-30" },
+    })
+  ).status() === 400,
+);
+check(
+  "Invalid category rejected",
+  (
+    await client.post("/api/transactions", {
+      data: { ...expense, category: "salary" },
+    })
+  ).status() === 400,
+);
+check(
+  "Future date rejected",
+  (
+    await client.post("/api/transactions", {
+      data: { ...expense, date: "2099-01-01" },
+    })
+  ).status() === 400,
+);
+check(
+  "Cross-origin write rejected",
+  (
+    await client.post("/api/transactions", {
+      data: expense,
+      headers: { Origin: "https://untrusted.example" },
+    })
+  ).status() === 403,
+);
+check(
+  "Second browser starts without a session",
+  (await outsider.get("/api/me")).status() === 401,
+);
+const otherRegistration = await outsider.post("/api/auth/register", {
+  data: { ...credentials, email: `other_${id}@example.test` },
+});
+assert.equal(
+  otherRegistration.status(),
+  201,
+  `Second test account: ${await otherRegistration.text()}`,
+);
+check(
+  "Other user cannot read records",
+  (await (await outsider.get("/api/transactions")).json()).transactions
+    .length === 0,
+);
+check(
+  "Other user cannot edit records",
+  (
+    await outsider.patch(`/api/transactions/${transaction.id}`, {
+      data: expense,
+    })
+  ).status() === 404,
+);
+check(
+  "Other user cannot delete records",
+  (
+    await outsider.delete(`/api/transactions/${transaction.id}`, { data: {} })
+  ).status() === 404,
+);
+check(
+  "Update operation",
+  (
+    await client.patch(`/api/transactions/${transaction.id}`, {
+      data: { ...expense, amount: 22200, title: "Изменённая покупка" },
+    })
+  ).status() === 200,
+);
+check(
+  "Budget persists",
+  (
+    await client.patch("/api/budget", { data: { budget: 9000000 } })
+  ).status() === 200 &&
+    (await (await client.get("/api/me")).json()).user.budget === 9000000,
+);
+check(
+  "Duplicate account rejected",
+  (
+    await outsider.post("/api/auth/register", { data: credentials })
+  ).status() === 409,
+);
+await client.post("/api/auth/logout", { data: {} });
+check(
+  "Logout invalidates session",
+  (await client.get("/api/me")).status() === 401,
+);
+check(
+  "Wrong password rejected",
+  (
+    await client.post("/api/auth/login", {
+      data: { email: credentials.email, password: "not-correct" },
+    })
+  ).status() === 401,
+);
+check(
+  "Login succeeds",
+  (await client.post("/api/auth/login", { data: credentials })).status() ===
+    200,
+);
+check(
+  "Transactions survive logout",
+  (await (await client.get("/api/transactions")).json()).transactions[0]
+    .title === "Изменённая покупка",
+);
+check(
+  "Delete operation",
+  (
+    await client.delete(`/api/transactions/${transaction.id}`, { data: {} })
+  ).status() === 200,
+);
+const browser = await chromium.launch({
+  headless: true,
+  channel: process.env.PLAYWRIGHT_CHANNEL || "chrome",
+});
+const context = await browser.newContext({
+    viewport: { width: 1440, height: 1100 },
+  }),
+  page = await context.newPage();
+const errors = [];
+page.on("pageerror", (e) => errors.push(e.message));
+await page.goto(baseURL, { waitUntil: "domcontentloaded" });
+await page.getByRole("heading", { name: "С возвращением" }).waitFor();
+await page.evaluate(() => document.fonts.ready);
+await mkdir("test-results", { recursive: true });
+for (const size of [
+  { name: "desktop", width: 1440, height: 1000 },
+  { name: "tablet", width: 834, height: 1112 },
+  { name: "mobile", width: 390, height: 844 },
+]) {
+  await page.setViewportSize(size);
+  await page.goto(baseURL, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: "С возвращением" }).waitFor();
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({
+    path: `test-results/${size.name}-login-v3.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
+  check(
+    `${size.name}: authentication has no horizontal overflow`,
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  );
+  await page.getByRole("button", { name: "Посмотреть демо" }).click();
+  await page.getByRole("heading", { name: "Куда уходят деньги" }).waitFor();
+  await page.screenshot({
+    path: `test-results/${size.name}-dashboard-v3.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
+  check(
+    `${size.name}: dashboard has no horizontal overflow`,
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  );
 }
-await page.setViewportSize({width:320,height:720});
-check('320px: no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-await page.setViewportSize({width:390,height:844});
-await page.getByRole('button',{name:'Добавить операцию',exact:true}).click();
-await page.getByRole('dialog').waitFor();
-await page.getByLabel('Сумма, ₽',{exact:true}).fill('350,50');
-await page.getByLabel('Название',{exact:true}).fill('UI-проверка');
-await page.screenshot({path:'design/mobile-add-operation.png',animations:'disabled'});
-await page.getByRole('dialog').getByRole('button',{name:'Добавить операцию',exact:true}).click();
-await page.getByText('UI-проверка',{exact:true}).waitFor();
-check('UI add expense with decimal comma',true);
-await page.getByRole('button',{name:/Редактировать: UI-проверка/}).click();
-await page.getByLabel('Сумма, ₽',{exact:true}).fill('500');
-await page.getByRole('button',{name:'Сохранить изменения'}).click();
-await page.getByRole('button',{name:/Редактировать: UI-проверка, 500/}).waitFor();
-check('UI edit expense',true);
-await page.getByRole('button',{name:'Создать аккаунт',exact:true}).first().click();
-await page.getByLabel('Пароль',{exact:true}).fill('TestSecure!1234');
-check('Password strength indicator updates',(await page.getByRole('progressbar',{name:'Надёжность пароля'}).getAttribute('aria-valuenow'))==='4');
-await page.screenshot({path:'design/mobile-register.png',animations:'disabled'});
-await page.getByLabel('ФИО',{exact:true}).fill('Алексей Иванов');
-await page.locator('input[name=nickname]').fill(`ui_${id}`);
-await page.getByLabel('Электронная почта',{exact:true}).fill(`ui_${id}@example.test`);
-await page.getByLabel('Повторите пароль',{exact:true}).fill('TestSecure!1234');
-await page.getByRole('dialog').getByRole('button',{name:'Создать аккаунт',exact:true}).click();
-await page.getByText('Всё сохранено',{exact:true}).waitFor({state:'attached'});
-await page.getByText('Здесь появятся ваши расходы',{exact:true}).waitFor();
-check('UI registration enters empty personal dashboard',true);
-await page.reload({waitUntil:'domcontentloaded'});
-await page.getByText('Здесь появятся ваши расходы',{exact:true}).waitFor();
-check('Session survives page reload',true);
-await page.getByRole('button',{name:'Личный кабинет',exact:true}).click();
-await page.getByLabel('ФИО',{exact:true}).fill('Алексей Обновлённый');
-await page.getByRole('button',{name:'Сохранить изменения',exact:true}).click();
-await page.getByRole('heading',{name:'Алексей Обновлённый',exact:true}).waitFor();
-check('Profile changes saved',true);
-await page.getByRole('button',{name:'Выйти из аккаунта',exact:true}).click();
-await page.getByText('Деморежим',{exact:true}).waitFor();
-check('No browser runtime exceptions',errors.length===0);
-await writeFile('design/verification.json',JSON.stringify({date:new Date().toISOString(),checks,errors},null,2));
-await browser.close();await client.dispose();await outsider.dispose();
+check(
+  "No light theme controls remain",
+  (await page.getByRole("button", { name: /Светлая|светлую тему/ }).count()) ===
+    0,
+);
+await page.evaluate(() => localStorage.setItem("orbit-theme", "light"));
+await page.reload({ waitUntil: "domcontentloaded" });
+await page.getByRole("heading", { name: "Куда уходят деньги" }).waitFor();
+check(
+  "Legacy light preference is removed",
+  await page.evaluate(
+    () =>
+      document.documentElement.dataset.theme === "dark" &&
+      localStorage.getItem("orbit-theme") === null,
+  ),
+);
+await page.setViewportSize({ width: 320, height: 720 });
+check(
+  "320px: no horizontal overflow",
+  await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+);
+await page.setViewportSize({ width: 390, height: 844 });
+await page
+  .getByRole("button", { name: "Добавить операцию", exact: true })
+  .click();
+await page.getByRole("dialog").waitFor();
+await page.getByLabel("Сумма, ₽", { exact: true }).fill("350,50");
+await page.getByLabel("Название", { exact: true }).fill("UI-проверка");
+await page.screenshot({
+  path: "test-results/mobile-add-operation.png",
+  animations: "disabled",
+});
+await page
+  .getByRole("dialog")
+  .getByRole("button", { name: "Добавить операцию", exact: true })
+  .click();
+await page.getByText("UI-проверка", { exact: true }).waitFor();
+check("UI add expense with decimal comma", true);
+await page.getByRole("button", { name: /Редактировать: UI-проверка/ }).click();
+await page.getByLabel("Сумма, ₽", { exact: true }).fill("500");
+await page.getByRole("button", { name: "Сохранить изменения" }).click();
+await page
+  .getByRole("button", { name: /Редактировать: UI-проверка, 500/ })
+  .waitFor();
+check("UI edit expense", true);
+await page
+  .getByRole("button", { name: "Создать аккаунт", exact: true })
+  .first()
+  .click();
+await page.getByLabel("Пароль", { exact: true }).fill(credentials.password);
+check(
+  "Password strength indicator updates",
+  (await page
+    .getByRole("progressbar", { name: "Надёжность пароля" })
+    .getAttribute("aria-valuenow")) === "4",
+);
+await page.screenshot({
+  path: "test-results/mobile-register-v3.png",
+  fullPage: true,
+  animations: "disabled",
+});
+check(
+  "Registration asks for name without full-name or nickname fields",
+  (await page.getByLabel("ФИО", { exact: true }).count()) === 0 &&
+    (await page.locator("input[name=nickname]").count()) === 0,
+);
+await page.getByLabel("Имя", { exact: true }).fill("Алексей");
+await page
+  .getByLabel("Электронная почта", { exact: true })
+  .fill(`ui_${id}@example.test`);
+await page
+  .getByLabel("Повторите пароль", { exact: true })
+  .fill(credentials.password);
+await page
+  .getByRole("button", { name: "Создать аккаунт", exact: true })
+  .first()
+  .click();
+await page
+  .getByText("Всё сохранено", { exact: true })
+  .waitFor({ state: "attached" });
+await page.locator(".expense-visual").waitFor();
+check(
+  "New account chart shows zero expenses",
+  (await page.locator(".donut-center strong").innerText()).replace(
+    /\s/g,
+    "",
+  ) === "0₽",
+);
+check(
+  "UI registration enters empty personal dashboard",
+  (await (await page.request.get(`${baseURL}/api/transactions`)).json())
+    .transactions.length === 0,
+);
+check(
+  "Registration persists the entered name",
+  (await (await page.request.get(`${baseURL}/api/me`)).json()).user.fullName ===
+    "Алексей",
+);
+await page.reload({ waitUntil: "domcontentloaded" });
+await page.locator(".expense-visual").waitFor();
+check("Session survives page reload", true);
+await page.getByRole("button", { name: "Личный кабинет", exact: true }).click();
+await page.getByLabel("ФИО", { exact: true }).fill("Алексей Обновлённый");
+await page
+  .getByRole("button", { name: "Сохранить изменения", exact: true })
+  .click();
+await page
+  .getByRole("heading", { name: "Алексей Обновлённый", exact: true })
+  .waitFor();
+check("Profile changes saved", true);
+await page
+  .getByRole("button", { name: "Выйти из аккаунта", exact: true })
+  .click();
+await page.getByRole("heading", { name: "С возвращением" }).waitFor();
+check("Logout returns to full login screen", true);
+await page
+  .getByLabel("Электронная почта", { exact: true })
+  .fill(`ui_${id}@example.test`);
+await page.getByLabel("Пароль", { exact: true }).fill(credentials.password);
+await page.getByRole("button", { name: "Войти в ORBIT", exact: true }).click();
+await page.locator(".expense-visual").waitFor();
+check("New login screen opens existing account", true);
+check("No browser runtime exceptions", errors.length === 0);
+await writeFile(
+  "test-results/verification.json",
+  JSON.stringify({ date: new Date().toISOString(), checks, errors }, null, 2),
+);
+await browser.close();
+await client.dispose();
+await outsider.dispose();
 console.log(`${checks.length} checks passed`);
-
-

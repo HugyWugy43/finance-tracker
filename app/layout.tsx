@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./styles.css";
 
 export const metadata: Metadata = {
   title: "ORBIT — личные финансы",
-  description: "Ваши финансы на одной орбите. Учитывайте доходы и расходы и замечайте главное.",
-  other: {
-    "codex-preview": "development",
-  },
+  description:
+    "Ваши финансы на одной орбите. Учитывайте доходы и расходы и замечайте главное.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -19,9 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" suppressHydrationWarning>
-      <body className="antialiased">{children}{process.env.NODE_ENV === "development" && <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async/>}</body>
+    <html lang="ru" data-theme="dark">
+      <body>{children}</body>
     </html>
   );
 }
-

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.next/
+.vinext/
+.wrangler/
+.npm-cache/
+test-results/
+package-lock.json
+cloudflare-env.d.ts
+next-env.d.ts

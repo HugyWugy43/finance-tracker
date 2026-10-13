@@ -47,3 +47,21 @@ next-env.d.ts
 /.npm-cache/
 /test-results/
 *.tsbuildinfo
+
+# Generated Figma handoff snapshots
+/design/figma/export/
+
+# Local secrets, database copies and saved browser sessions
+.dev.vars
+.dev.vars.*
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.log
+/playwright/.auth/
+/auth-state*.json
+/storage-state*.json
