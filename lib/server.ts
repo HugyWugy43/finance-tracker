@@ -59,11 +59,17 @@ export async function body(request: Request) {
       reader.releaseLock();
     }
   }
-  if (
-    request.headers.get("origin") &&
-    new URL(request.headers.get("origin")!).host !== new URL(request.url).host
-  ) {
-    throw new ApiError("Недопустимый источник запроса.", 403);
+  const origin = request.headers.get("origin");
+  if (origin !== null) {
+    // Origin includes the scheme as well as host and port. Opaque and malformed
+    // origins must be rejected rather than turning into a server error.
+    let allowed = false;
+    try {
+      allowed = new URL(origin).origin === new URL(request.url).origin;
+    } catch {
+      // Invalid URL, including the literal Origin: null.
+    }
+    if (!allowed) throw new ApiError("Недопустимый источник запроса.", 403);
   }
   if (!request.headers.get("content-type")?.startsWith("application/json")) {
     throw new ApiError("Ожидается JSON.", 415);
@@ -167,7 +173,7 @@ export function validateProfile(data: Record<string, unknown>) {
 }
 export async function limitAuth(request: Request, email: string) {
   const key = await digest(
-      `${request.headers.get("cf-connecting-ip") || "local"}:${email.toLowerCase()}`,
+      `${request.headers.get("cf-connecting-ip") || "local"}:${email.trim().toLowerCase()}`,
     ),
     now = Date.now();
   const result = await db()

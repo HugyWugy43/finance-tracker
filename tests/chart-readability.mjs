@@ -105,7 +105,12 @@ for (const width of [1440, 834, 570, 390, 320]) {
   );
   check(
     `${width}: Golos Text loaded`,
-    await page.evaluate(() => document.fonts.check('16px "Golos Text"')),
+    await page.evaluate(async () => {
+      const faces = await document.fonts.load('16px "Golos Text"', "Финансы");
+      return (
+        faces.length > 0 && faces.every((face) => face.status === "loaded")
+      );
+    }),
   );
   if ([1440, 390].includes(width))
     await page.screenshot({
@@ -154,7 +159,12 @@ for (const width of [1440, 390, 320]) {
   await page.evaluate(() => document.fonts.ready);
   check(
     `${width}: Onest loaded`,
-    await page.evaluate(() => document.fonts.check("16px Onest")),
+    await page.evaluate(async () => {
+      const faces = await document.fonts.load("16px Onest", "Регистрация");
+      return (
+        faces.length > 0 && faces.every((face) => face.status === "loaded")
+      );
+    }),
   );
   check(
     `${width}: login has no overflow`,

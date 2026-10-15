@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1230" viewBox="0 0 1440 1230">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#08090d"/><stop offset="1" stop-color="#0d1020"/></linearGradient>
+    <linearGradient id="card" x2="1" y2="1"><stop stop-color="#1a1d28"/><stop offset="1" stop-color="#12151d"/></linearGradient>
+    <linearGradient id="capital" x2="1" y2="1"><stop stop-color="#1b2132"/><stop offset="1" stop-color="#121622"/></linearGradient>
+    <linearGradient id="accent" x2="1" y2="1"><stop stop-color="#a9b7ff"/><stop offset="1" stop-color="#c6ceff"/></linearGradient>
+    <linearGradient id="glow" x2="1" y2="1"><stop stop-color="#6e77ff" stop-opacity=".48"/><stop offset="1" stop-color="#8e44e8" stop-opacity="0"/></linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="42"/></filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity=".25"/></filter>
+    <style>
+      text{font-family:'Golos Text',Inter,Arial,sans-serif;fill:#f1f3fb} .muted{fill:#a8aec2}.subtle{fill:#9098b0}.tiny{font-size:12px}.small{font-size:14px}.body{font-size:16px}.title{font-size:24px;font-weight:700;letter-spacing:-.5px}.amount{font-weight:700;letter-spacing:-1px}.kicker{font-size:12px;letter-spacing:2px;font-weight:700;fill:#99a6c9}.line{stroke:#ffffff18}.panel{fill:url(#card);stroke:#ffffff20;stroke-width:1.5}.iconStroke{fill:none;stroke:#a9b7ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="1440" height="1230" fill="url(#bg)"/>
+  <ellipse cx="660" cy="340" rx="480" ry="300" fill="#3348a8" opacity=".15" filter="url(#blur)"/>
+  <ellipse cx="1290" cy="250" rx="250" ry="300" fill="#6638a2" opacity=".12" filter="url(#blur)"/>
+  <!-- Desktop navigation rail -->
+  <rect x="16" y="16" width="76" height="1198" rx="38" fill="#ffffff08" stroke="#ffffff20"/>
+  <path d="M54 35c3 13 7 17 20 20-13 3-17 7-20 20-3-13-7-17-20-20 13-3 17-7 20-20Z" fill="#f4f4ff"/>
+  <rect x="26" y="113" width="56" height="56" rx="28" fill="url(#accent)"/>
+  <g stroke="#171c37" stroke-width="2" fill="none"><rect x="43" y="130" width="8" height="8" rx="1"/><rect x="56" y="130" width="8" height="8" rx="1"/><rect x="43" y="143" width="8" height="8" rx="1"/><rect x="56" y="143" width="8" height="8" rx="1"/></g>
+  <g class="iconStroke"><path d="M42 205h23m-5-5 5 5-5 5m-13 9h-5m5-5-5 5 5 5"/><path d="m43 267 7-8 5 4 10-13m-1 0h5v5"/><circle cx="54" cy="314" r="9"/><path d="M39 339c2-9 8-13 15-13s13 4 15 13"/></g>
+  <text x="54" y="1148" class="subtle tiny" transform="rotate(-90 54 1148)" letter-spacing="3">YOUR ORBIT</text>
+  <path d="M54 1170c2 8 5 11 13 13-8 2-11 5-13 13-2-8-5-11-13-13 8-2 11-5 13-13Z" fill="#a9b7ff" opacity=".8"/>
+  <!-- Header -->
+  <g transform="translate(128 28)"><path d="M12 0c2 7 5 10 12 12-7 2-10 5-12 12C10 17 7 14 0 12 7 10 10 7 12 0Z" fill="#f4f4ff"/><text x="32" y="23" font-size="27" font-weight="700" letter-spacing="-1.5">orbit</text><text x="112" y="21" class="muted small">/　 Обзор</text></g>
+  <rect x="1163" y="19" width="245" height="48" rx="24" fill="#ffffff06" stroke="#ffffff20"/>
+  <circle cx="1190" cy="43" r="4" fill="#a9b7ff"/><text x="1204" y="48" class="muted small">Всё сохранено</text><circle cx="1371" cy="43" r="17" fill="url(#accent)"/><text x="1371" y="48" text-anchor="middle" font-size="13" fill="#171c37">М</text>
+  <!-- Page title and actions -->
+  <text x="148" y="107" class="kicker">ВАША ФИНАНСОВАЯ ОРБИТА</text>
+  <text x="148" y="151" font-size="36" font-weight="700" letter-spacing="-1.5">Финансы на вашей орбите.</text>
+  <text x="148" y="183" class="muted body">Меньше неопределённости. Больше возможностей.</text>
+  <rect x="930" y="130" width="170" height="48" rx="24" fill="#ffffff08" stroke="#ffffff20"/><path d="m950 153 5-5m-5 5 5 5" stroke="#a8aec2" stroke-width="1.5"/><text x="1014" y="160" text-anchor="middle" class="small" font-weight="600">Октябрь 2026</text><path d="m1080 148 5 5-5 5" stroke="#a8aec2" fill="none"/>
+  <rect x="1110" y="130" width="253" height="48" rx="24" fill="url(#accent)"/><text x="1236" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#171c37">＋　Добавить операцию</text>
+  <!-- Balance card -->
+  <rect x="148" y="207" width="475" height="308" rx="30" fill="url(#capital)" stroke="#ffffff26" stroke-width="1.5" filter="url(#shadow)"/>
+  <circle cx="174" cy="238" r="3" fill="#a9b7ff"/><text x="188" y="243" class="kicker">ВАШ КАПИТАЛ</text><circle cx="579" cy="239" r="20" fill="#ffffff08" stroke="#ffffff18"/><path d="M579 226c2 7 4 10 11 12-7 2-9 5-11 12-2-7-5-10-12-12 7-2 10-5 12-12Z" fill="#c2cbff"/>
+  <text x="173" y="294" class="muted body">Общий баланс</text><text x="173" y="351" font-size="48" class="amount">124 680 ₽</text><text x="173" y="379" class="muted small">На всех счетах · российский рубль</text>
+  <ellipse cx="541" cy="347" rx="98" ry="49" transform="rotate(-30 541 347)" fill="none" stroke="#aebfff" stroke-opacity=".32" stroke-width="2"/><circle cx="545" cy="341" r="63" fill="url(#glow)" stroke="#aebfff" stroke-opacity=".27"/><path d="M545 286c8 33 16 44 50 54-34 9-42 19-50 53-9-34-19-44-53-53 34-10 44-21 53-54Z" fill="#dce4ff" opacity=".8"/>
+  <text x="173" y="430" class="muted small">На своей орбите.</text><path d="M173 448h424" class="line"/><path d="M397 459v39" class="line"/>
+  <text x="174" y="474" class="muted small">↙　Доходы за месяц</text><text x="174" y="502" font-size="23" font-weight="700">85 000 ₽</text><text x="420" y="474" class="muted small">↗　Расходы за месяц</text><text x="420" y="502" font-size="23" font-weight="700">31 320 ₽</text>
+  <!-- Budget card -->
+  <rect x="643" y="207" width="650" height="308" rx="30" class="panel" filter="url(#shadow)"/>
+  <text x="670" y="240" class="kicker">ВАШ ПЛАН / 01</text><text x="670" y="273" class="title">Бюджет месяца</text><circle cx="1257" cy="247" r="20" fill="#ffffff06" stroke="#ffffff24"/><g class="iconStroke"><path d="M1249 243h16m-13-4v8m-3 7h16m-5-4v8"/></g>
+  <text x="670" y="320" class="muted body">Можно потратить ещё</text><text x="670" y="369" font-size="38" class="amount">18 680 ₽</text><path d="m1255 356 12-12m-12 0h12v12" class="iconStroke"/>
+  <text x="670" y="414" class="muted small">Использовано</text><text x="1265" y="414" text-anchor="end" font-size="16" font-weight="700">63%</text><rect x="670" y="428" width="596" height="14" rx="7" fill="#ffffff18"/><rect x="670" y="428" width="375" height="14" rx="7" fill="url(#accent)"/>
+  <text x="670" y="471" class="small" font-weight="600">31 320 ₽</text><text x="670" y="495" class="subtle small">потрачено</text><text x="1266" y="471" text-anchor="end" class="small" font-weight="600">50 000 ₽</text><text x="1266" y="495" text-anchor="end" class="subtle small">лимит на месяц</text>
+  <!-- Recent operations -->
+  <rect x="148" y="535" width="475" height="411" rx="30" class="panel"/>
+  <text x="174" y="569" class="kicker">ИСТОРИЯ / 02</text><text x="174" y="602" class="title">Последние операции</text><circle cx="581" cy="580" r="19" fill="#ffffff06" stroke="#ffffff28"/><path d="m575 586 12-12m-12 0h12v12" class="iconStroke"/>
+  <g>
+    <circle cx="187" cy="646" r="19" fill="#b9ed5a22"/><text x="187" y="652" text-anchor="middle" font-size="17" fill="#b9ed5a">▦</text><text x="217" y="644" font-size="15" font-weight="700">Перекрёсток</text><text x="217" y="665" class="muted small">Продукты</text><text x="593" y="654" text-anchor="end" font-size="16" font-weight="700">−2 450 ₽</text><path d="M174 683h423" class="line"/>
+    <circle cx="187" cy="713" r="19" fill="#b9ed5a22"/><text x="187" y="719" text-anchor="middle" font-size="17" fill="#b9ed5a">▦</text><text x="217" y="711" font-size="15" font-weight="700">Кофе и завтрак</text><text x="217" y="732" class="muted small">Продукты</text><text x="593" y="721" text-anchor="end" font-size="16" font-weight="700">−580 ₽</text><path d="M174 750h423" class="line"/>
+    <circle cx="187" cy="780" r="19" fill="#ffb96e22"/><text x="187" y="786" text-anchor="middle" font-size="16" fill="#ffb96e">⌁</text><text x="217" y="778" font-size="15" font-weight="700">Яндекс Go</text><text x="217" y="799" class="muted small">Транспорт</text><text x="593" y="788" text-anchor="end" font-size="16" font-weight="700">−420 ₽</text><path d="M174 817h423" class="line"/>
+    <circle cx="187" cy="847" r="19" fill="#b89cff22"/><text x="187" y="853" text-anchor="middle" font-size="16" fill="#b89cff">▣</text><text x="217" y="845" font-size="15" font-weight="700">Новые кроссовки</text><text x="217" y="866" class="muted small">Покупки</text><text x="593" y="855" text-anchor="end" font-size="16" font-weight="700">−6 490 ₽</text><path d="M174 884h423" class="line"/>
+    <circle cx="187" cy="914" r="19" fill="#f090c122"/><text x="187" y="920" text-anchor="middle" font-size="16" fill="#f090c1">♫</text><text x="217" y="912" font-size="15" font-weight="700">Подписка Яндекс Плюс</text><text x="217" y="933" class="muted small">Досуг</text><text x="593" y="922" text-anchor="end" font-size="16" font-weight="700">−399 ₽</text>
+  </g>
+  <!-- Expense categories -->
+  <rect x="643" y="535" width="650" height="411" rx="30" fill="url(#capital)" stroke="#ffffff20" stroke-width="1.5"/>
+  <text x="670" y="569" class="kicker">СТАТИСТИКА / 03</text><text x="670" y="602" class="title">Куда уходят деньги</text>
+  <rect x="670" y="620" width="596" height="46" rx="23" fill="#ffffff04" stroke="#ffffff1a"/>
+  <text x="768" y="649" text-anchor="middle" class="muted small">День</text><rect x="868" y="625" width="191" height="36" rx="18" fill="#c0caff22"/><text x="964" y="649" text-anchor="middle" class="small" font-weight="700">Неделя</text><text x="1165" y="649" text-anchor="middle" class="muted small">Месяц</text>
+  <text x="670" y="691" class="subtle small">7 окт. — 13 окт.</text><text x="1265" y="691" text-anchor="end" class="subtle small">Неделя с　13.10.2026</text>
+  <circle cx="790" cy="806" r="76" fill="none" stroke="#ffffff10" stroke-width="21"/>
+  <circle cx="790" cy="806" r="76" fill="none" stroke="#8bcdf1" stroke-width="21" stroke-linecap="round" stroke-dasharray="126 478" transform="rotate(-90 790 806)"/>
+  <circle cx="790" cy="806" r="76" fill="none" stroke="#b9ed5a" stroke-width="21" stroke-linecap="round" stroke-dasharray="72 478" stroke-dashoffset="-139" transform="rotate(-90 790 806)"/>
+  <circle cx="790" cy="806" r="76" fill="none" stroke="#b89cff" stroke-width="21" stroke-linecap="round" stroke-dasharray="113 478" stroke-dashoffset="-226" transform="rotate(-90 790 806)"/>
+  <circle cx="790" cy="806" r="76" fill="none" stroke="#f090c1" stroke-width="21" stroke-linecap="round" stroke-dasharray="55 478" stroke-dashoffset="-350" transform="rotate(-90 790 806)"/>
+  <circle cx="790" cy="806" r="76" fill="none" stroke="#ffb96e" stroke-width="21" stroke-linecap="round" stroke-dasharray="43 478" stroke-dashoffset="-419" transform="rotate(-90 790 806)"/>
+  <text x="790" y="791" text-anchor="middle" class="muted small">Всего потрачено</text><text x="790" y="824" text-anchor="middle" font-size="27" class="amount">13 250 ₽</text><text x="790" y="847" text-anchor="middle" class="subtle tiny">7 операций за неделю</text>
+  <g class="small"><circle cx="914" cy="725" r="4" fill="#b89cff"/><text x="927" y="730" class="muted">Покупки</text><text x="1212" y="730" text-anchor="end" font-weight="700">6 490 ₽</text><text x="1265" y="730" text-anchor="end" class="subtle">49%</text>
+    <circle cx="914" cy="766" r="4" fill="#b9ed5a"/><text x="927" y="771" class="muted">Продукты</text><text x="1212" y="771" text-anchor="end" font-weight="700">3 030 ₽</text><text x="1265" y="771" text-anchor="end" class="subtle">23%</text>
+    <circle cx="914" cy="807" r="4" fill="#f090c1"/><text x="927" y="812" class="muted">Досуг</text><text x="1212" y="812" text-anchor="end" font-weight="700">2 259 ₽</text><text x="1265" y="812" text-anchor="end" class="subtle">17%</text>
+    <circle cx="914" cy="848" r="4" fill="#9299a8"/><text x="927" y="853" class="muted">Другое</text><text x="1212" y="853" text-anchor="end" font-weight="700">1 051 ₽</text><text x="1265" y="853" text-anchor="end" class="subtle">8%</text>
+    <circle cx="914" cy="889" r="4" fill="#ffb96e"/><text x="927" y="894" class="muted">Транспорт</text><text x="1212" y="894" text-anchor="end" font-weight="700">420 ₽</text><text x="1265" y="894" text-anchor="end" class="subtle">3%</text>
+    <circle cx="914" cy="930" r="4" fill="#8bcdf1"/><text x="927" y="935" class="muted">Дом</text><text x="1212" y="935" text-anchor="end" font-weight="700">0 ₽</text><text x="1265" y="935" text-anchor="end" class="subtle">0%</text></g>
+  <!-- Financial rhythm -->
+  <rect x="148" y="966" width="1145" height="214" rx="30" class="panel"/>
+  <text x="175" y="1002" class="kicker">ДИНАМИКА / 04</text><text x="175" y="1035" class="title">Финансовый ритм</text><text x="175" y="1064" class="muted small">Ваши расходы день за днём</text><text x="175" y="1102" font-size="15" font-weight="600" fill="#bfcaff">Открыть аналитику ↗</text>
+  <text x="563" y="1013" font-size="25" font-weight="700">31 320 ₽</text><text x="668" y="1013" class="subtle small">за выбранный месяц</text>
+  <path d="M566 1140 L650 1071 L730 1102 L808 1140 L890 1140 L970 1140 L1050 1140 L1125 1110 L1205 1088 L1270 1110" fill="none" stroke="#bbc6ff" stroke-width="2.5"/><path d="M566 1140 L650 1071 L730 1102 L808 1140 L890 1140 L970 1140 L1050 1140 L1125 1110 L1205 1088 L1270 1110 L1270 1150 L566 1150Z" fill="url(#accent)" opacity=".12"/><path d="M565 1153H1270" stroke="#ffffff14" stroke-dasharray="2 6"/>
+  <g class="subtle tiny"><text x="566" y="1171">01</text><text x="734" y="1171">05</text><text x="904" y="1171">09</text><text x="1083" y="1171">13</text><text x="1258" y="1171">31</text></g>
+  <path d="M580 1204c2 7 5 10 12 12-7 2-10 5-12 12-2-7-5-10-12-12 7-2 10-5 12-12Z" fill="#bfcaff"/><text x="600" y="1220" class="muted small">Ваши финансы на одной орбите</text><text x="1370" y="1220" text-anchor="end" class="subtle tiny">Внесение операций вручную · RUB</text>
+</svg>

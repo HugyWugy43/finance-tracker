@@ -841,6 +841,10 @@ main {
   min-height: 460px;
 }
 
+.profile-guest .profile-guest-star {
+  filter: invert(1);
+  padding: 24px;
+}
 .profile-guest img {
   width: 40%;
   mix-blend-mode: screen;

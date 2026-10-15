@@ -47,6 +47,13 @@ try {
       .waitFor();
     await page.evaluate(() => document.fonts.ready);
     check(
+      `${width}: profile images decode successfully`,
+      await page.locator(".profile-guest img").evaluateAll(async (images) => {
+        await Promise.all(images.map((img) => img.decode().catch(() => {})));
+        return images.length > 0 && images.every((img) => img.naturalWidth > 0);
+      }),
+    );
+    check(
       `${width}: profile text fits`,
       await page.locator(".profile-guest").evaluate((el) =>
         [...el.querySelectorAll("h2,p,button")].every((n) => {

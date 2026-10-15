@@ -14,11 +14,12 @@ export function GuestProfile({
   return (
     <section className="panel profile-guest">
       <img
-        src="/images/chrome-orbit.jpg"
+        src="/images/orbit-star.png"
+        className="profile-guest-star"
         width={256}
         height={256}
         decoding="async"
-        alt="Хромированная звезда с орбитой"
+        alt="Звезда ORBIT"
       />
       <div>
         <div className="eyebrow">ВАША ЛИЧНАЯ ОРБИТА</div>

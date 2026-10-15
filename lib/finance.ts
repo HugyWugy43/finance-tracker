@@ -110,7 +110,8 @@ export function validateTransaction(body: unknown): Omit<Transaction, "id"> {
     )
   )
     throw new Error("Выберите категорию.");
-  if (!accounts.includes(String(b.account))) throw new Error("Выберите счёт.");
+  if (typeof b.account !== "string" || !accounts.includes(b.account))
+    throw new Error("Выберите счёт.");
   return {
     type: b.type,
     amount: Number(b.amount),
