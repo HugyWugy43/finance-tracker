@@ -3,7 +3,6 @@ import { randomUUID } from "node:crypto";
 import { request } from "playwright";
 import { mkdir, writeFile } from "node:fs/promises";
 
-// Real HTTP requests: no route interception or mocked database.
 const baseURL = process.env.ORBIT_URL || "http://127.0.0.1:5173";
 const client = await request.newContext({ baseURL });
 const results = [];
