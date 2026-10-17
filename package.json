@@ -6,6 +6,11 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "build:render": "node scripts/render.mjs build",
+    "start:render": "node scripts/render.mjs start",
+    "dev:node": "node scripts/render.mjs dev --port 5174",
+    "db:migrate:turso": "node scripts/migrate-turso.mjs",
+    "test:turso": "node tests/turso.mjs",
     "dev": "node --import ./scripts/runtime-env.mjs ./node_modules/vinext/dist/cli.js dev --port 5173",
     "build": "node --import ./scripts/runtime-env.mjs ./node_modules/vinext/dist/cli.js build",
     "start": "node --import ./scripts/runtime-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --port 4173 --inspector-port 0",
@@ -14,12 +19,13 @@
     "test": "node tests/verify.mjs && node tests/adversarial.mjs && node tests/usability.mjs && node tests/chart-readability.mjs && node tests/visual.mjs && node tests/project-health.mjs",
     "test:adversarial": "node tests/adversarial.mjs",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "node --import ./scripts/runtime-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 migrations apply DB --local --persist-to .wrangler/state",
+    "db:migrate": "node --import ./scripts/runtime-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 migrations apply DB --config wrangler.local.jsonc --local --persist-to .wrangler/state",
     "format": "prettier --write app components lib db tests scripts *.ts *.mjs *.json *.jsonc *.md docs",
     "format:check": "prettier --check app components lib db tests scripts *.ts *.mjs *.json *.jsonc *.md docs",
     "test:usability": "node tests/usability.mjs"
   },
   "dependencies": {
+    "@libsql/client": "^0.18.0",
     "lucide-react": "^1.31.0",
     "next": "16.3.4",
     "react": "19.2.6",

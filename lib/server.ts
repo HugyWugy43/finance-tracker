@@ -172,9 +172,13 @@ export function validateProfile(data: Record<string, unknown>) {
   return { fullName, nickname, email };
 }
 export async function limitAuth(request: Request, email: string) {
-  const key = await digest(
-      `${request.headers.get("cf-connecting-ip") || "local"}:${email.trim().toLowerCase()}`,
-    ),
+  // Only Cloudflare supplies a trusted CF-Connecting-IP. On Render a client
+  // could spoof that header, so use one counter per normalized account there.
+  const source =
+    process.env.ORBIT_RUNTIME === "node"
+      ? "node"
+      : request.headers.get("cf-connecting-ip") || "local";
+  const key = await digest(`${source}:${email.trim().toLowerCase()}`),
     now = Date.now();
   const result = await db()
     .prepare(
